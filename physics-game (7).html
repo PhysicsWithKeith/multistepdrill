@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Level Physics Challenge</title>
+    <style>
+        /* Import a fun, modern font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@700;900&display=swap');
+        
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #004e89;
+            --accent-color: #f7b801;
+            --success-color: #06d6a0;
+            --error-color: #ef476f;
+            --bg-gradient-1: #667eea;
+            --bg-gradient-2: #764ba2;
+            --bg-gradient-3: #f093fb;
+            --text-dark: #2d3436;
+            --text-light: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100px) rotate(180deg); }
+        }
+        
+        /* Main container */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 900px;
+            width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Header styles */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary-color);
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        /* Screen management */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Intro screen */
+        .rules-list {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f2f9 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .rules-list h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .rules-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .rules-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .rules-list li:before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-size: 1.2em;
+        }
+        
+        /* Button styles */
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #ff8c61 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #0066aa 100%);
+            box-shadow: 0 5px 15px rgba(0, 78, 137, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(0, 78, 137, 0.6);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* Game screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .timer-display {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #ffcc33 100%);
+            color: var(--text-dark);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.3em;
+            box-shadow: 0 4px 10px rgba(247, 184, 1, 0.4);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .score-display {
+            background: linear-gradient(135deg, var(--success-color) 0%, #33e6b8 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.3em;
+            box-shadow: 0 4px 10px rgba(6, 214, 160, 0.4);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .question-container {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .question-number {
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .question-points {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .question-text {
+            color: var(--text-dark);
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .answer-section {
+            margin-top: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1.1em;
+        }
+        
+        .answer-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .unit-label {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            padding-right: 60px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .submit-btn {
+            padding: 12px 30px;
+            font-size: 1em;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: 600;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4f4dd 0%, #b4e7c1 100%);
+            color: #0d5c2c;
+            border-left: 5px solid var(--success-color);
+        }
+        
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ffdde2 0%, #ffb3c1 100%);
+            color: #8b0a1a;
+            border-left: 5px solid var(--error-color);
+        }
+        
+        .hint {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff9e6;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 10px;
+            color: var(--text-dark);
+        }
+        
+        .attempts-remaining {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        
+        /* End screen */
+        .final-score {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .score-value {
+            font-size: 4em;
+            font-weight: 900;
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #e9f2f9 0%, #d4e6f7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .stat-label {
+            color: var(--text-dark);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            color: var(--secondary-color);
+            font-size: 2em;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .performance-message {
+            text-align: center;
+            font-size: 1.3em;
+            color: var(--secondary-color);
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        
+        /* Subscript and superscript styling */
+        sub, sup {
+            font-size: 0.75em;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+        
+        sub {
+            bottom: -0.25em;
+        }
+        
+        sup {
+            top: -0.5em;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .timer-display, .score-display {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div id="particles"></div>
+    
+    <!-- Main container -->
+    <div class="container">
+        <h1>⚛️ A-LEVEL PHYSICS CHALLENGE ⚡</h1>
+        <div class="subtitle">Multi-Step Problem Solving</div>
+        
+        <!-- Introduction Screen -->
+        <div id="intro-screen" class="screen active">
+            <div class="rules-list">
+                <h3>🎮 Game Rules</h3>
+                <ul>
+                    <li>You have <strong>15 minutes</strong> to answer as many questions as possible</li>
+                    <li>Each question requires <strong>multiple physics equations</strong> to solve</li>
+                    <li>Harder questions (using more equations) award <strong>more points</strong>:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>2 equations = 10 points</li>
+                            <li>3 equations = 20 points</li>
+                            <li>4+ equations = 30 points</li>
+                        </ul>
+                    </li>
+                    <li>You get <strong>3 attempts</strong> per question</li>
+                    <li>After wrong answers, you'll receive <strong>helpful hints</strong></li>
+                    <li>Answers are accepted if correct to <strong>2 significant figures</strong></li>
+                    <li>Press <strong>Enter</strong> to submit your answer or move to the next question</li>
+                </ul>
+            </div>
+            
+            <div class="rules-list">
+                <h3>📚 Topics Covered</h3>
+                <ul>
+                    <li>Mechanics & Energy</li>
+                    <li>Electricity & Circuits</li>
+                    <li>Waves & Photonics</li>
+                    <li>Thermal Physics</li>
+                    <li>Fields & Forces</li>
+                    <li>Particle & Nuclear Physics</li>
+                </ul>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn" onclick="startGame()">START CHALLENGE</button>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="timer-display" id="timer">⏱️ 15:00</div>
+                <div class="score-display" id="score">🏆 Score: 0</div>
+                <button class="btn btn-secondary" onclick="endGame()" style="padding: 10px 20px; font-size: 0.9em;">END EARLY</button>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-info">
+                    <div class="question-number" id="question-number">Question 1</div>
+                    <div class="question-points" id="question-points">Worth: 10 points</div>
+                </div>
+                <div class="question-text" id="question-text"></div>
+                
+                <div class="answer-section">
+                    <div class="input-group">
+                        <label for="answer-input">Your Answer:</label>
+                        <div class="answer-input-wrapper">
+                            <input type="text" id="answer-input" autocomplete="off">
+                            <span class="unit-label" id="unit-label"></span>
+                        </div>
+                        <button class="btn submit-btn" id="submit-btn" onclick="submitAnswer()">SUBMIT</button>
+                    </div>
+                    <div id="feedback-area"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- End Screen -->
+        <div id="end-screen" class="screen">
+            <div class="final-score">
+                <h2 style="color: var(--secondary-color); margin-bottom: 10px;">🎉 Challenge Complete! 🎉</h2>
+                <div class="score-value" id="final-score">0</div>
+                <div class="performance-message" id="performance-message"></div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Questions Answered</div>
+                    <div class="stat-value" id="questions-answered">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correct-answers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracy">0%</div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn" onclick="location.reload()">PLAY AGAIN</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ========================================
+        // GAME STATE VARIABLES
+        // ========================================
+        
+        let gameState = {
+            score: 0,
+            questionNumber: 0,
+            questionsAnswered: 0,
+            correctAnswers: 0,
+            timeRemaining: 900, // 15 minutes in seconds
+            timerInterval: null,
+            currentQuestion: null,
+            attemptsRemaining: 3,
+            gameActive: false
+        };
+        
+        // ========================================
+        // PHYSICS CONSTANTS
+        // ========================================
+        
+        const CONSTANTS = {
+            e: 1.6e-19,           // Elementary charge (C)
+            me: 9.11e-31,         // Electron mass (kg)
+            mp: 1.67e-27,         // Proton mass (kg)
+            h: 6.63e-34,          // Planck's constant (J·s)
+            c: 3.0e8,             // Speed of light (m/s)
+            k: 9.0e9,             // Coulomb's constant (N·m²/C²)
+            G: 6.67e-11,          // Gravitational constant (N·m²/kg²)
+            g: 9.81,              // Acceleration due to gravity (m/s²)
+            NA: 6.02e23,          // Avogadro's number (mol⁻¹)
+            R: 8.31,              // Gas constant (J/(mol·K))
+            sigma: 5.67e-8        // Stefan-Boltzmann constant (W/(m²·K⁴))
+        };
+        
+        // ========================================
+        // QUESTION GENERATION SYSTEM
+        // ========================================
+        
+        /**
+         * Question template structure:
+         * - difficulty: number of equations required (2, 3, or 4)
+         * - points: score awarded for correct answer
+         * - generator: function that creates a random question instance
+         * - Each generator returns: {text, answer, unit, hints, steps}
+         */
+        
+        const questionTemplates = [
+            
+            // ========================================
+            // 2-EQUATION QUESTIONS (10 POINTS)
+            // ========================================
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Kinetic energy from potential energy drop
+                    const mass = randRange(0.1, 5, 1);
+                    const height = randRange(5, 50, 0);
+                    
+                    // Step 1: GPE = mgh
+                    const gpe = mass * CONSTANTS.g * height;
+                    // Step 2: KE = GPE (energy conservation)
+                    const ke = gpe;
+                    
+                    return {
+                        text: `A mass of ${mass} kg is dropped from a height of ${height} m. Calculate the kinetic energy of the mass just before it hits the ground. (Ignore air resistance)`,
+                        answer: ke,
+                        unit: 'J',
+                        hints: [
+                            'Start by calculating the gravitational potential energy at the initial height using GPE = mgh',
+                            'Remember that all the potential energy converts to kinetic energy: KE = GPE'
+                        ],
+                        steps: ['Calculate GPE = mgh', 'Use energy conservation: KE = GPE']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Power and energy calculation
+                    const power = randRange(100, 2000, 0);
+                    const time = randRange(60, 600, 0);
+                    
+                    // Step 1: E = Pt
+                    const energy = power * time;
+                    
+                    return {
+                        text: `An electric heater has a power rating of ${power} W. Calculate the energy transferred by the heater in ${time} seconds.`,
+                        answer: energy,
+                        unit: 'J',
+                        hints: [
+                            'Use the relationship between power, energy and time: P = E/t',
+                            'Rearrange to find energy: E = Pt'
+                        ],
+                        steps: ['Use E = Pt']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Ohm's law and power
+                    const voltage = randRange(5, 24, 0);
+                    const resistance = randRange(10, 100, 0);
+                    
+                    // Step 1: I = V/R
+                    const current = voltage / resistance;
+                    // Step 2: P = VI
+                    const power = voltage * current;
+                    
+                    return {
+                        text: `A resistor of resistance ${resistance} Ω is connected across a ${voltage} V power supply. Calculate the power dissipated by the resistor.`,
+                        answer: power,
+                        unit: 'W',
+                        hints: [
+                            'First find the current using Ohm\'s law: I = V/R',
+                            'Then calculate power using P = VI (or P = V²/R)'
+                        ],
+                        steps: ['Calculate current I = V/R', 'Calculate power P = VI']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Wave equation
+                    const frequency = randRange(100, 1000, 0);
+                    const wavelength = randRange(0.1, 5, 2);
+                    
+                    // v = fλ
+                    const speed = frequency * wavelength;
+                    
+                    return {
+                        text: `A wave has a frequency of ${frequency} Hz and a wavelength of ${wavelength} m. Calculate the speed of the wave.`,
+                        answer: speed,
+                        unit: 'm/s',
+                        hints: [
+                            'Use the wave equation: v = fλ',
+                            'Where v is speed, f is frequency, and λ is wavelength'
+                        ],
+                        steps: ['Apply wave equation v = fλ']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Momentum and kinetic energy
+                    const mass = randRange(500, 2000, 0);
+                    const velocity = randRange(10, 40, 0);
+                    
+                    // Step 1: p = mv
+                    const momentum = mass * velocity;
+                    // Step 2: KE = ½mv²
+                    const ke = 0.5 * mass * velocity * velocity;
+                    
+                    return {
+                        text: `A car of mass ${mass} kg is traveling at ${velocity} m/s. Calculate the kinetic energy of the car.`,
+                        answer: ke,
+                        unit: 'J',
+                        hints: [
+                            'Use the kinetic energy formula: KE = ½mv²',
+                            'Make sure to square the velocity'
+                        ],
+                        steps: ['Calculate KE = ½mv²']
+                    };
+                }
+            },
+            
+            // ========================================
+            // 3-EQUATION QUESTIONS (20 POINTS)
+            // ========================================
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Electron acceleration and de Broglie wavelength
+                    const voltage = randRange(100, 1000, 0);
+                    
+                    // Step 1: Energy gained: E = eV
+                    const energy = CONSTANTS.e * voltage;
+                    // Step 2: KE = ½mv², solve for v
+                    const velocity = Math.sqrt(2 * energy / CONSTANTS.me);
+                    // Step 3: λ = h/(mv)
+                    const wavelength = CONSTANTS.h / (CONSTANTS.me * velocity);
+                    
+                    return {
+                        text: `An electron is accelerated from rest through a potential difference of ${voltage} V. Calculate the de Broglie wavelength of the electron. (electron mass = 9.11×10^-31 kg, electron charge = 1.6×10^-19 C, Planck's constant = 6.63×10^-34 J·s)`,
+                        answer: wavelength,
+                        unit: 'm',
+                        hints: [
+                            'First, find the kinetic energy gained: E = eV',
+                            'Then find the velocity using KE = ½mv^2',
+                            'Finally, use the de Broglie equation: λ = h/(mv)'
+                        ],
+                        steps: ['Calculate energy E = eV', 'Find velocity from KE = ½mv^2', 'Calculate wavelength λ = h/(mv)']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Circuit with series resistors and power
+                    const V = randRange(12, 24, 0);
+                    const R1 = randRange(10, 50, 0);
+                    const R2 = randRange(10, 50, 0);
+                    
+                    // Step 1: Total resistance R = R1 + R2
+                    const Rtotal = R1 + R2;
+                    // Step 2: Current I = V/R
+                    const current = V / Rtotal;
+                    // Step 3: Power in R1: P = I²R
+                    const power = current * current * R1;
+                    
+                    return {
+                        text: `Two resistors of ${R1} Ω and ${R2} Ω are connected in series across a ${V} V battery. Calculate the power dissipated in the ${R1} Ω resistor.`,
+                        answer: power,
+                        unit: 'W',
+                        hints: [
+                            'First find the total resistance: R_total = R₁ + R₂',
+                            'Then find the current: I = V/R_total',
+                            'Finally, calculate power in R₁: P = I²R₁'
+                        ],
+                        steps: ['Calculate total resistance', 'Find current I = V/R', 'Calculate power P = I²R']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Projectile motion with energy
+                    const velocity = randRange(20, 50, 0);
+                    const angle = randRange(30, 60, 0);
+                    const mass = randRange(0.1, 2, 1);
+                    
+                    // Step 1: Vertical component of velocity
+                    const vy = velocity * Math.sin(angle * Math.PI / 180);
+                    // Step 2: Max height from energy: h = vy²/(2g)
+                    const maxHeight = (vy * vy) / (2 * CONSTANTS.g);
+                    // Step 3: GPE at max height
+                    const gpe = mass * CONSTANTS.g * maxHeight;
+                    
+                    return {
+                        text: `A projectile of mass ${mass} kg is launched at ${velocity} m/s at an angle of ${angle}° to the horizontal. Calculate the gravitational potential energy at the maximum height of its trajectory.`,
+                        answer: gpe,
+                        unit: 'J',
+                        hints: [
+                            'Find the vertical component of velocity: v_y = v sin(θ)',
+                            'At max height, vertical velocity is zero. Use v² = u² + 2as to find height',
+                            'Calculate GPE = mgh at maximum height'
+                        ],
+                        steps: ['Find vertical velocity component', 'Calculate max height using kinematics', 'Calculate GPE = mgh']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Heating with thermal energy
+                    const mass = randRange(0.5, 3, 1);
+                    const specificHeat = randRange(400, 900, 0);
+                    const tempRise = randRange(10, 50, 0);
+                    
+                    // Step 1: Q = mcΔT
+                    const energy = mass * specificHeat * tempRise;
+                    // Step 2: P = Q/t (we'll ask for power given a time)
+                    const time = randRange(60, 300, 0);
+                    const power = energy / time;
+                    
+                    return {
+                        text: `A heating element heats ${mass} kg of a substance (specific heat capacity ${specificHeat} J/(kg·K)) from 20°C to ${20 + tempRise}°C in ${time} seconds. Calculate the power of the heating element, assuming no heat is lost to the surroundings.`,
+                        answer: power,
+                        unit: 'W',
+                        hints: [
+                            'First calculate the energy required: Q = mcΔT',
+                            'The temperature rise is ΔT = ' + tempRise + ' K',
+                            'Then find power: P = Q/t'
+                        ],
+                        steps: ['Calculate energy Q = mcΔT', 'Calculate power P = Q/t']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Photon energy and wavelength
+                    const wavelength = randRange(400, 700, 0);
+                    const wavelengthMeters = wavelength * 1e-9;
+                    
+                    // Step 1: f = c/λ
+                    const frequency = CONSTANTS.c / wavelengthMeters;
+                    // Step 2: E = hf
+                    const energy = CONSTANTS.h * frequency;
+                    // Step 3: Number of photons in a given power
+                    const power = randRange(1, 10, 0) * 1e-3; // mW to W
+                    const time = 1; // per second
+                    const totalEnergy = power * time;
+                    const numPhotons = totalEnergy / energy;
+                    
+                    return {
+                        text: `A laser emits light of wavelength ${wavelength} nm with a power of ${formatQuestionNumber(power * 1000)} mW. Calculate the number of photons emitted per second. (h = 6.63×10^-34 J·s, c = 3.0×10^8 m/s)`,
+                        answer: numPhotons,
+                        unit: '',
+                        hints: [
+                            'First find the frequency: f = c/λ (remember to convert nm to m)',
+                            'Then find energy per photon: E = hf',
+                            'Finally, number of photons = (total energy per second) / (energy per photon)'
+                        ],
+                        steps: ['Calculate frequency f = c/λ', 'Calculate photon energy E = hf', 'Find number of photons']
+                    };
+                }
+            },
+            
+            // ========================================
+            // 4-EQUATION QUESTIONS (30 POINTS)
+            // ========================================
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Electron flow, current, heating, and temperature
+                    const current = randRange(1, 5, 1);
+                    const time = randRange(60, 300, 0);
+                    const voltage = randRange(6, 12, 0);
+                    const mass = randRange(0.1, 0.5, 2);
+                    const specificHeat = 4200; // water
+                    
+                    // Step 1: Q = ne (charge)
+                    const charge = current * time;
+                    const numElectrons = charge / CONSTANTS.e;
+                    
+                    // Step 2: Energy = VIt
+                    const energy = voltage * current * time;
+                    
+                    // Step 3: Q = mcΔT, solve for ΔT
+                    const tempRise = energy / (mass * specificHeat);
+                    
+                    return {
+                        text: `A ${voltage} V electric heater draws a current of ${current} A for ${time} seconds, heating ${mass} kg of water (specific heat capacity 4200 J/(kg·K)). Calculate the temperature rise of the water, assuming all electrical energy is transferred to the water. (e = 1.6×10⁻¹⁹ C)`,
+                        answer: tempRise,
+                        unit: 'K',
+                        hints: [
+                            'Calculate the total electrical energy: E = VIt',
+                            'This energy heats the water: Q = mcΔT',
+                            'Rearrange to find ΔT = Q/(mc)'
+                        ],
+                        steps: ['Calculate electrical energy E = VIt', 'Use Q = mcΔT', 'Solve for temperature rise']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Orbital motion, gravitational field, and energy
+                    const M = randRange(5, 20, 0) * 1e24; // planet mass
+                    const radius = randRange(2, 8, 0) * 1e6; // orbit radius
+                    const satMass = randRange(100, 1000, 0); // satellite mass
+                    
+                    // Step 1: Orbital velocity v = √(GM/r)
+                    const velocity = Math.sqrt(CONSTANTS.G * M / radius);
+                    
+                    // Step 2: KE = ½mv²
+                    const ke = 0.5 * satMass * velocity * velocity;
+                    
+                    // Step 3: GPE = -GMm/r
+                    const gpe = -CONSTANTS.G * M * satMass / radius;
+                    
+                    // Step 4: Total energy
+                    const totalEnergy = ke + gpe;
+                    
+                    return {
+                        text: `A satellite of mass ${satMass} kg orbits a planet of mass ${formatQuestionNumber(M)} kg at a radius of ${formatQuestionNumber(radius)} m. Calculate the total mechanical energy of the satellite. (G = 6.67×10^-11 N·m^2/kg^2)`,
+                        answer: totalEnergy,
+                        unit: 'J',
+                        hints: [
+                            'First find orbital velocity: v = √(GM/r)',
+                            'Calculate kinetic energy: KE = ½mv^2',
+                            'Calculate gravitational potential energy: GPE = -GMm/r',
+                            'Total energy = KE + GPE'
+                        ],
+                        steps: ['Find orbital velocity', 'Calculate KE', 'Calculate GPE', 'Sum for total energy']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Photoelectric effect with work function
+                    const workFunction = randRange(2, 5, 1);
+                    const wavelength = randRange(200, 400, 0);
+                    const wavelengthMeters = wavelength * 1e-9;
+                    
+                    // Step 1: Photon frequency f = c/λ
+                    const frequency = CONSTANTS.c / wavelengthMeters;
+                    
+                    // Step 2: Photon energy E = hf
+                    const photonEnergy = CONSTANTS.h * frequency;
+                    
+                    // Step 3: Max KE = hf - φ
+                    const maxKE = photonEnergy - (workFunction * CONSTANTS.e);
+                    
+                    // Step 4: Find max velocity: KE = ½mv²
+                    const maxVelocity = Math.sqrt(2 * maxKE / CONSTANTS.me);
+                    
+                    return {
+                        text: `Light of wavelength ${wavelength} nm is incident on a metal surface with work function ${workFunction} eV. Calculate the maximum velocity of the emitted photoelectrons. (h = 6.63×10^-34 J·s, c = 3.0×10^8 m/s, m_e = 9.11×10^-31 kg, e = 1.6×10^-19 C)`,
+                        answer: maxVelocity,
+                        unit: 'm/s',
+                        hints: [
+                            'Calculate photon frequency: f = c/λ',
+                            'Calculate photon energy: E = hf',
+                            'Maximum KE of electrons: KE_max = hf - φ (convert work function to J)',
+                            'Find velocity from KE = ½mv^2'
+                        ],
+                        steps: ['Calculate frequency', 'Calculate photon energy', 'Find max KE', 'Calculate max velocity']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Capacitor discharge and energy
+                    const capacitance = randRange(100, 1000, 0) * 1e-6; // μF to F
+                    const initialVoltage = randRange(12, 24, 0);
+                    const resistance = randRange(1000, 10000, 0);
+                    const time = randRange(1, 5, 1) * 1e-3; // ms to s
+                    
+                    // Step 1: Time constant τ = RC
+                    const tau = resistance * capacitance;
+                    
+                    // Step 2: V(t) = V₀e^(-t/τ)
+                    const voltage = initialVoltage * Math.exp(-time / tau);
+                    
+                    // Step 3: Initial energy E₀ = ½CV₀²
+                    const initialEnergy = 0.5 * capacitance * initialVoltage * initialVoltage;
+                    
+                    // Step 4: Energy at time t: E = ½CV²
+                    const energy = 0.5 * capacitance * voltage * voltage;
+                    
+                    // Energy dissipated
+                    const energyDissipated = initialEnergy - energy;
+                    
+                    return {
+                        text: `A capacitor of ${formatQuestionNumber(capacitance * 1e6)} μF charged to ${initialVoltage} V discharges through a ${formatQuestionNumber(resistance)} Ω resistor. Calculate the energy dissipated in the first ${formatQuestionNumber(time * 1e3)} ms of discharge.`,
+                        answer: energyDissipated,
+                        unit: 'J',
+                        hints: [
+                            'Find the time constant: τ = RC',
+                            'Calculate voltage at time t: V(t) = V_0 e^(-t/τ)',
+                            'Initial energy: E_0 = ½CV_0^2',
+                            'Energy at time t: E = ½CV^2, then find energy dissipated'
+                        ],
+                        steps: ['Calculate time constant', 'Find voltage at time t', 'Calculate initial and final energy', 'Find energy dissipated']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Young's modulus and elastic potential energy
+                    const diameter = randRange(1, 3, 1) * 1e-3; // mm to m
+                    const length = randRange(1, 3, 1); // m
+                    const youngsModulus = randRange(100, 200, 0) * 1e9; // GPa to Pa
+                    const force = randRange(100, 500, 0); // N
+                    
+                    // Step 1: Cross-sectional area A = πr²
+                    const radius = diameter / 2;
+                    const area = Math.PI * radius * radius;
+                    
+                    // Step 2: Stress = F/A
+                    const stress = force / area;
+                    
+                    // Step 3: Strain = stress/E
+                    const strain = stress / youngsModulus;
+                    
+                    // Step 4: Extension = strain × length
+                    const extension = strain * length;
+                    
+                    // Step 5: Elastic potential energy = ½Fx
+                    const energy = 0.5 * force * extension;
+                    
+                    return {
+                        text: `A wire of diameter ${formatQuestionNumber(diameter * 1e3)} mm and length ${length} m is made from a material with Young's modulus ${formatQuestionNumber(youngsModulus / 1e9)}×10^9 Pa. When a force of ${force} N is applied, calculate the elastic potential energy stored in the wire.`,
+                        answer: energy,
+                        unit: 'J',
+                        hints: [
+                            'Calculate cross-sectional area: A = πr^2 (diameter = 2r)',
+                            'Find stress: σ = F/A',
+                            'Calculate strain: ε = σ/E',
+                            'Find extension: Δl = εL',
+                            'Elastic PE = ½FΔl'
+                        ],
+                        steps: ['Calculate area', 'Find stress', 'Calculate strain', 'Find extension', 'Calculate elastic PE']
+                    };
+                }
+            },
+            
+            // ========================================
+            // MORE MECHANICS QUESTIONS
+            // ========================================
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Circular motion - centripetal force
+                    const mass = randRange(500, 2000, 0);
+                    const radius = randRange(10, 50, 0);
+                    const velocity = randRange(15, 35, 0);
+                    
+                    // F = mv²/r
+                    const force = (mass * velocity * velocity) / radius;
+                    
+                    return {
+                        text: `A car of mass ${mass} kg travels around a circular track of radius ${radius} m at a constant speed of ${velocity} m/s. Calculate the centripetal force acting on the car.`,
+                        answer: force,
+                        unit: 'N',
+                        hints: [
+                            'Use the centripetal force formula: F = mv²/r',
+                            'Remember to square the velocity'
+                        ],
+                        steps: ['Apply F = mv²/r']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Elastic collision in 1D
+                    const m1 = randRange(2, 8, 0);
+                    const v1 = randRange(10, 20, 0);
+                    const m2 = randRange(2, 8, 0);
+                    // m2 initially at rest
+                    
+                    // Conservation of momentum: m1v1 = m1v1' + m2v2'
+                    // Conservation of KE: ½m1v1² = ½m1v1'² + ½m2v2'²
+                    // For elastic collision with m2 at rest:
+                    // v1' = ((m1-m2)/(m1+m2)) * v1
+                    // v2' = (2m1/(m1+m2)) * v1
+                    
+                    const v2final = (2 * m1 / (m1 + m2)) * v1;
+                    
+                    return {
+                        text: `In an elastic collision, a ball of mass ${m1} kg moving at ${v1} m/s collides with a stationary ball of mass ${m2} kg. Calculate the final velocity of the ${m2} kg ball after the collision.`,
+                        answer: v2final,
+                        unit: 'm/s',
+                        hints: [
+                            'Use conservation of momentum: m₁v₁ = m₁v₁\' + m₂v₂\'',
+                            'Also use conservation of kinetic energy for elastic collisions',
+                            'For a stationary target: v₂\' = 2m₁/(m₁+m₂) × v₁'
+                        ],
+                        steps: ['Apply momentum conservation', 'Apply energy conservation', 'Solve for v₂\'']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Moments equilibrium
+                    const force = randRange(50, 200, 0);
+                    const distance1 = randRange(2, 5, 1);
+                    const distance2 = randRange(1, 3, 1);
+                    
+                    // For equilibrium: F1 × d1 = F2 × d2
+                    const force2 = (force * distance1) / distance2;
+                    
+                    return {
+                        text: `A uniform beam is balanced on a pivot. A force of ${force} N acts ${distance1} m from the pivot on one side. Calculate the force needed ${distance2} m from the pivot on the other side to maintain equilibrium.`,
+                        answer: force2,
+                        unit: 'N',
+                        hints: [
+                            'For equilibrium, sum of clockwise moments = sum of anticlockwise moments',
+                            'Moment = force × perpendicular distance'
+                        ],
+                        steps: ['Apply principle of moments: F₁d₁ = F₂d₂', 'Solve for F₂']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Projectile range calculation
+                    const velocity = randRange(25, 45, 0);
+                    const angle = 45; // Max range
+                    const height = randRange(5, 20, 0);
+                    
+                    // Horizontal range with initial height
+                    const g = CONSTANTS.g;
+                    const v0 = velocity;
+                    const theta = angle * Math.PI / 180;
+                    
+                    // Time to reach ground: h = v₀sin(θ)t - ½gt²
+                    const a = -0.5 * g;
+                    const b = v0 * Math.sin(theta);
+                    const c = height;
+                    const time = (-b + Math.sqrt(b*b - 4*a*c)) / (2*a);
+                    
+                    // Range = horizontal velocity × time
+                    const range = v0 * Math.cos(theta) * time;
+                    
+                    return {
+                        text: `A projectile is launched at ${velocity} m/s at an angle of ${angle}° from a platform ${height} m high. Calculate the horizontal range of the projectile.`,
+                        answer: range,
+                        unit: 'm',
+                        hints: [
+                            'Split velocity into horizontal (v cos θ) and vertical (v sin θ) components',
+                            'Find time of flight using vertical motion: h = v₀sin(θ)t - ½gt²',
+                            'Range = horizontal velocity × time of flight'
+                        ],
+                        steps: ['Resolve velocity components', 'Calculate time of flight', 'Calculate range']
+                    };
+                }
+            },
+            
+            // ========================================
+            // SIMPLE HARMONIC MOTION (SHM)
+            // ========================================
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Mass-spring system
+                    const mass = randRange(0.5, 2, 1);
+                    const springConstant = randRange(50, 200, 0);
+                    const amplitude = randRange(0.05, 0.2, 2);
+                    
+                    // Period T = 2π√(m/k)
+                    const period = 2 * Math.PI * Math.sqrt(mass / springConstant);
+                    
+                    // Max velocity v_max = Aω = A(2π/T) = A√(k/m)
+                    const maxVelocity = amplitude * Math.sqrt(springConstant / mass);
+                    
+                    return {
+                        text: `A mass of ${mass} kg is attached to a spring with spring constant ${springConstant} N/m and oscillates with amplitude ${amplitude} m. Calculate the maximum velocity of the mass.`,
+                        answer: maxVelocity,
+                        unit: 'm/s',
+                        hints: [
+                            'First find angular frequency: ω = √(k/m)',
+                            'Maximum velocity in SHM: v_max = Aω',
+                            'Alternatively: v_max = A√(k/m)'
+                        ],
+                        steps: ['Calculate ω = √(k/m)', 'Calculate v_max = Aω']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Simple pendulum
+                    const length = randRange(0.5, 2, 1);
+                    const mass = randRange(0.1, 0.5, 1);
+                    const amplitude = randRange(0.1, 0.3, 2);
+                    
+                    // Period T = 2π√(L/g)
+                    const period = 2 * Math.PI * Math.sqrt(length / CONSTANTS.g);
+                    
+                    // Max GPE at amplitude = mgh where h = L(1-cos θ) ≈ A²/(2L) for small angles
+                    // Or simpler: max KE = max GPE = ½m(Aω)²
+                    const omega = 2 * Math.PI / period;
+                    const maxKE = 0.5 * mass * amplitude * amplitude * omega * omega;
+                    
+                    return {
+                        text: `A simple pendulum consists of a ${mass} kg mass on a ${length} m string. It swings with an amplitude of ${amplitude} m. Calculate the maximum kinetic energy of the pendulum bob.`,
+                        answer: maxKE,
+                        unit: 'J',
+                        hints: [
+                            'Find the period: T = 2π√(L/g)',
+                            'Calculate angular frequency: ω = 2π/T',
+                            'Maximum KE = ½m(Aω)²'
+                        ],
+                        steps: ['Calculate period T = 2π√(L/g)', 'Find ω = 2π/T', 'Calculate KE_max = ½m(Aω)²']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Energy in SHM at specific displacement
+                    const mass = randRange(0.2, 1, 1);
+                    const springConstant = randRange(80, 150, 0);
+                    const amplitude = randRange(0.08, 0.15, 2);
+                    const displacement = amplitude * 0.6; // At 60% of amplitude
+                    
+                    // Total energy = ½kA²
+                    const totalEnergy = 0.5 * springConstant * amplitude * amplitude;
+                    
+                    // PE at displacement x = ½kx²
+                    const PE = 0.5 * springConstant * displacement * displacement;
+                    
+                    // KE = Total - PE
+                    const KE = totalEnergy - PE;
+                    
+                    // Velocity at x: v = ω√(A²-x²)
+                    const omega = Math.sqrt(springConstant / mass);
+                    const velocity = omega * Math.sqrt(amplitude*amplitude - displacement*displacement);
+                    
+                    return {
+                        text: `A ${mass} kg mass oscillates on a spring (k = ${springConstant} N/m) with amplitude ${amplitude} m. Calculate the velocity when the displacement is ${toSigFig(displacement, 2)} m from equilibrium.`,
+                        answer: velocity,
+                        unit: 'm/s',
+                        hints: [
+                            'Total energy = ½kA²',
+                            'PE at displacement x = ½kx²',
+                            'KE = Total energy - PE = ½mv²',
+                            'Solve for v'
+                        ],
+                        steps: ['Calculate total energy', 'Find PE at displacement', 'Calculate KE', 'Solve for velocity']
+                    };
+                }
+            },
+            
+            // ========================================
+            // WAVES
+            // ========================================
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Standing wave on string
+                    const harmonicNumber = randRange(2, 5, 0);
+                    const length = randRange(0.5, 2, 1);
+                    const frequency = randRange(100, 400, 0);
+                    
+                    // For nth harmonic: wavelength λ = 2L/n
+                    const wavelength = (2 * length) / harmonicNumber;
+                    
+                    // v = fλ
+                    const waveSpeed = frequency * wavelength;
+                    
+                    return {
+                        text: `A string of length ${length} m vibrates in its ${harmonicNumber}${harmonicNumber===2?'nd':harmonicNumber===3?'rd':'th'} harmonic at ${frequency} Hz. Calculate the speed of waves on the string.`,
+                        answer: waveSpeed,
+                        unit: 'm/s',
+                        hints: [
+                            'For the nth harmonic on a string: λ = 2L/n',
+                            'Then use v = fλ'
+                        ],
+                        steps: ['Calculate wavelength λ = 2L/n', 'Calculate v = fλ']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Two-slit interference
+                    const slitSeparation = randRange(0.3, 0.6, 1) * 1e-3; // mm to m
+                    const screenDistance = randRange(2, 5, 1); // m
+                    const wavelength = randRange(450, 650, 0) * 1e-9; // nm to m
+                    
+                    // Fringe separation w = λD/s
+                    const fringeSeparation = (wavelength * screenDistance) / slitSeparation;
+                    
+                    // Distance to 3rd bright fringe = 3w
+                    const n = randRange(3, 6, 0);
+                    const distance = n * fringeSeparation;
+                    
+                    return {
+                        text: `In a double-slit experiment, light of wavelength ${formatQuestionNumber(wavelength * 1e9)} nm passes through slits ${formatQuestionNumber(slitSeparation * 1e3)} mm apart onto a screen ${screenDistance} m away. Calculate the distance from the central maximum to the ${n}${n===3?'rd':'th'} bright fringe.`,
+                        answer: distance,
+                        unit: 'm',
+                        hints: [
+                            'Calculate fringe separation: w = λD/s',
+                            'Distance to nth bright fringe = nw'
+                        ],
+                        steps: ['Calculate fringe width w = λD/s', 'Find distance to nth fringe = nw']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Doppler effect
+                    const sourceFreq = randRange(800, 1200, 0);
+                    const sourceVelocity = randRange(20, 50, 0);
+                    const soundSpeed = 340;
+                    
+                    // For source moving toward observer: f' = f(v/(v-v_s))
+                    const observedFreq = sourceFreq * (soundSpeed / (soundSpeed - sourceVelocity));
+                    
+                    return {
+                        text: `A sound source emitting ${sourceFreq} Hz moves toward a stationary observer at ${sourceVelocity} m/s. Calculate the frequency heard by the observer. (Speed of sound = ${soundSpeed} m/s)`,
+                        answer: observedFreq,
+                        unit: 'Hz',
+                        hints: [
+                            'Use Doppler effect formula for moving source',
+                            'Source approaching: f\' = f × v/(v - v_s)',
+                            'Where v is speed of sound, v_s is source speed'
+                        ],
+                        steps: ['Identify appropriate Doppler formula', 'Calculate f\' = f(v/(v-v_s))']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Diffraction grating
+                    const gratingLines = randRange(300, 600, 0); // lines per mm
+                    const wavelength = randRange(500, 650, 0); // nm
+                    const order = randRange(1, 2, 0);
+                    
+                    // d sin θ = nλ
+                    const d = 1e-3 / gratingLines; // spacing in meters
+                    const lambda = wavelength * 1e-9;
+                    const sinTheta = (order * lambda) / d;
+                    const theta = Math.asin(sinTheta) * 180 / Math.PI;
+                    
+                    return {
+                        text: `Light of wavelength ${wavelength} nm is incident normally on a diffraction grating with ${gratingLines} lines per mm. Calculate the angle of the ${order}${order===1?'st':'nd'} order maximum.`,
+                        answer: theta,
+                        unit: '°',
+                        hints: [
+                            'Calculate slit spacing: d = 1/N (convert mm to m)',
+                            'Use grating equation: d sin θ = nλ',
+                            'Solve for θ'
+                        ],
+                        steps: ['Calculate d = 1/(lines per m)', 'Apply d sin θ = nλ', 'Solve for angle']
+                    };
+                }
+            },
+            
+            // ========================================
+            // FIELDS - GRAVITATIONAL AND ELECTRIC
+            // ========================================
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Gravitational field strength
+                    const mass = randRange(5, 25, 0) * 1e23;
+                    const radius = randRange(3, 10, 0) * 1e6;
+                    
+                    // g = GM/r²
+                    const g = (CONSTANTS.G * mass) / (radius * radius);
+                    
+                    // Escape velocity v = √(2GM/r)
+                    const escapeVel = Math.sqrt(2 * CONSTANTS.G * mass / radius);
+                    
+                    return {
+                        text: `A planet has mass ${formatQuestionNumber(mass)} kg and radius ${formatQuestionNumber(radius)} m. Calculate the escape velocity from the planet's surface. (G = 6.67×10^-11 N·m^2/kg^2)`,
+                        answer: escapeVel,
+                        unit: 'm/s',
+                        hints: [
+                            'Escape velocity is when KE = GPE',
+                            '½mv² = GMm/r',
+                            'v = √(2GM/r)'
+                        ],
+                        steps: ['Set KE = GPE', 'Derive v = √(2GM/r)', 'Calculate escape velocity']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Electric field between parallel plates
+                    const voltage = randRange(500, 2000, 0);
+                    const separation = randRange(2, 8, 0) * 1e-3; // mm to m
+                    
+                    // E = V/d
+                    const electricField = voltage / separation;
+                    
+                    // Force on electron F = eE
+                    const force = CONSTANTS.e * electricField;
+                    
+                    return {
+                        text: `Two parallel plates are separated by ${formatQuestionNumber(separation * 1e3)} mm with a potential difference of ${voltage} V. Calculate the force on an electron between the plates. (e = 1.6×10^-19 C)`,
+                        answer: force,
+                        unit: 'N',
+                        hints: [
+                            'Calculate electric field: E = V/d',
+                            'Force on charge: F = qE'
+                        ],
+                        steps: ['Calculate E = V/d', 'Calculate F = eE']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Charged particle in magnetic field
+                    const charge = CONSTANTS.e;
+                    const mass = CONSTANTS.me;
+                    const voltage = randRange(1000, 5000, 0);
+                    const magneticField = randRange(0.01, 0.1, 2);
+                    
+                    // KE from voltage: eV = ½mv²
+                    const velocity = Math.sqrt(2 * charge * voltage / mass);
+                    
+                    // Radius in magnetic field: r = mv/(qB)
+                    const radius = (mass * velocity) / (charge * magneticField);
+                    
+                    return {
+                        text: `An electron is accelerated through ${voltage} V then enters a uniform magnetic field of ${magneticField} T perpendicular to its motion. Calculate the radius of its circular path. (e = 1.6×10^-19 C, m_e = 9.11×10^-31 kg)`,
+                        answer: radius,
+                        unit: 'm',
+                        hints: [
+                            'Find velocity from energy: eV = ½mv²',
+                            'In magnetic field, centripetal force = magnetic force',
+                            'mv²/r = Bqv, so r = mv/(qB)'
+                        ],
+                        steps: ['Calculate velocity from eV = ½mv²', 'Apply r = mv/(qB)']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Electric potential and field
+                    const charge = randRange(1, 5, 0) * 1e-6; // μC
+                    const distance = randRange(0.1, 0.5, 2);
+                    
+                    // V = kQ/r
+                    const potential = (CONSTANTS.k * charge) / distance;
+                    
+                    // E = kQ/r²
+                    const field = (CONSTANTS.k * charge) / (distance * distance);
+                    
+                    return {
+                        text: `A point charge of ${formatQuestionNumber(charge * 1e6)} μC creates an electric potential at a distance of ${distance} m. Calculate the electric field strength at this point. (k = 9.0×10^9 N·m^2/C^2)`,
+                        answer: field,
+                        unit: 'V/m',
+                        hints: [
+                            'Electric field from point charge: E = kQ/r²',
+                            'Or E = V/r where V = kQ/r'
+                        ],
+                        steps: ['Apply E = kQ/r²']
+                    };
+                }
+            },
+            
+            // ========================================
+            // NUCLEAR PHYSICS
+            // ========================================
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Radioactive decay
+                    const halfLife = randRange(5, 20, 0);
+                    const initialActivity = randRange(1000, 5000, 0);
+                    const time = halfLife * randRange(2, 4, 0);
+                    
+                    // N = N₀(½)^(t/t_½)
+                    const numHalfLives = time / halfLife;
+                    const finalActivity = initialActivity * Math.pow(0.5, numHalfLives);
+                    
+                    return {
+                        text: `A radioactive sample has an initial activity of ${initialActivity} Bq and a half-life of ${halfLife} days. Calculate the activity after ${time} days.`,
+                        answer: finalActivity,
+                        unit: 'Bq',
+                        hints: [
+                            'Calculate number of half-lives: n = t/t_½',
+                            'Activity = A₀ × (½)^n'
+                        ],
+                        steps: ['Find number of half-lives', 'Calculate A = A₀(½)^n']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Decay constant and activity
+                    const halfLife = randRange(10, 50, 0); // seconds
+                    const initialNumber = randRange(1, 5, 0) * 1e15;
+                    
+                    // λ = ln(2)/t_½
+                    const decayConstant = Math.log(2) / halfLife;
+                    
+                    // A = λN
+                    const activity = decayConstant * initialNumber;
+                    
+                    return {
+                        text: `A radioactive sample contains ${formatQuestionNumber(initialNumber)} atoms and has a half-life of ${halfLife} s. Calculate the initial activity of the sample.`,
+                        answer: activity,
+                        unit: 'Bq',
+                        hints: [
+                            'Calculate decay constant: λ = ln(2)/t_½',
+                            'Activity = λN'
+                        ],
+                        steps: ['Calculate λ = ln(2)/t_½', 'Calculate A = λN']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Nuclear binding energy
+                    const protons = randRange(10, 20, 0);
+                    const neutrons = randRange(10, 25, 0);
+                    const atomicMass = protons + neutrons - randRange(0.1, 0.3, 2); // mass defect
+                    
+                    // Mass defect Δm = (Z×m_p + N×m_n) - m_nucleus
+                    const massDefect = (protons * CONSTANTS.mp + neutrons * CONSTANTS.mp) - (atomicMass * 1.66e-27);
+                    
+                    // Binding energy = Δm × c²
+                    const bindingEnergy = massDefect * CONSTANTS.c * CONSTANTS.c;
+                    
+                    // Binding energy per nucleon
+                    const bindingEnergyPerNucleon = bindingEnergy / (protons + neutrons);
+                    
+                    return {
+                        text: `A nucleus has ${protons} protons and ${neutrons} neutrons with a mass of ${atomicMass} u. Calculate the binding energy per nucleon. (1 u = 1.66×10^-27 kg, m_p ≈ m_n = 1.67×10^-27 kg, c = 3.0×10^8 m/s)`,
+                        answer: bindingEnergyPerNucleon,
+                        unit: 'J',
+                        hints: [
+                            'Calculate total mass of separated nucleons',
+                            'Mass defect = (mass of nucleons) - (actual mass)',
+                            'Binding energy = Δm × c²',
+                            'Divide by number of nucleons'
+                        ],
+                        steps: ['Calculate mass defect', 'Find binding energy = Δm c²', 'Divide by A']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Alpha particle energy
+                    const voltage = randRange(5, 15, 0) * 1e6; // MV
+                    const alphaCharge = 2 * CONSTANTS.e;
+                    
+                    // Energy gained: E = qV
+                    const energy = alphaCharge * voltage;
+                    
+                    // KE = ½mv², so v = √(2E/m)
+                    // Alpha particle mass ≈ 4 × proton mass
+                    const alphaMass = 4 * CONSTANTS.mp;
+                    const velocity = Math.sqrt(2 * energy / alphaMass);
+                    
+                    return {
+                        text: `An alpha particle (charge +2e, mass 6.68×10^-27 kg) is accelerated through a potential difference of ${formatQuestionNumber(voltage / 1e6)} MV. Calculate its final velocity. (e = 1.6×10^-19 C)`,
+                        answer: velocity,
+                        unit: 'm/s',
+                        hints: [
+                            'Energy gained: E = qV (remember alpha has charge +2e)',
+                            'Use KE = ½mv²',
+                            'Solve for velocity'
+                        ],
+                        steps: ['Calculate energy E = qV', 'Use E = ½mv²', 'Solve for v']
+                    };
+                }
+            },
+            
+            // ========================================
+            // THERMAL PHYSICS AND GAS LAWS
+            // ========================================
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // Ideal gas law
+                    const pressure = randRange(100, 500, 0) * 1e3; // kPa to Pa
+                    const volume = randRange(0.01, 0.1, 3); // m³
+                    const temperature = randRange(250, 400, 0); // K
+                    
+                    // PV = nRT, so n = PV/(RT)
+                    const moles = (pressure * volume) / (CONSTANTS.R * temperature);
+                    
+                    return {
+                        text: `A gas at ${formatQuestionNumber(pressure / 1e3)} kPa occupies ${volume} m³ at ${temperature} K. Calculate the number of moles of gas. (R = 8.31 J/(mol·K))`,
+                        answer: moles,
+                        unit: 'mol',
+                        hints: [
+                            'Use ideal gas law: PV = nRT',
+                            'Rearrange to find n = PV/(RT)'
+                        ],
+                        steps: ['Apply PV = nRT', 'Solve for n']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Gas pressure and kinetic theory
+                    const moles = randRange(1, 5, 1);
+                    const temperature = randRange(273, 400, 0);
+                    const volume = randRange(0.02, 0.08, 2);
+                    
+                    // PV = nRT
+                    const pressure = (moles * CONSTANTS.R * temperature) / volume;
+                    
+                    // Mean kinetic energy per molecule = 3/2 kT
+                    const k = CONSTANTS.R / CONSTANTS.NA; // Boltzmann constant
+                    const meanKE = 1.5 * k * temperature;
+                    
+                    return {
+                        text: `${moles} moles of an ideal gas at ${temperature} K occupies ${volume} m³. Calculate the mean kinetic energy of one molecule. (R = 8.31 J/(mol·K), N_A = 6.02×10^23 mol^-1)`,
+                        answer: meanKE,
+                        unit: 'J',
+                        hints: [
+                            'Boltzmann constant k = R/N_A',
+                            'Mean KE per molecule = (3/2)kT'
+                        ],
+                        steps: ['Calculate k = R/N_A', 'Calculate KE = (3/2)kT']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Adiabatic process
+                    const P1 = randRange(100, 300, 0) * 1e3;
+                    const V1 = randRange(0.02, 0.05, 3);
+                    const V2 = V1 * randRange(2, 4, 0);
+                    const gamma = 1.4; // for diatomic gas
+                    
+                    // For adiabatic: PV^γ = constant
+                    const P2 = P1 * Math.pow(V1 / V2, gamma);
+                    
+                    return {
+                        text: `An ideal diatomic gas undergoes adiabatic expansion from volume ${V1} m³ to ${toSigFig(V2, 2)} m³. If the initial pressure is ${formatQuestionNumber(P1 / 1e3)} kPa, calculate the final pressure. (γ = 1.4)`,
+                        answer: P2,
+                        unit: 'Pa',
+                        hints: [
+                            'For adiabatic process: PV^γ = constant',
+                            'P₁V₁^γ = P₂V₂^γ',
+                            'Solve for P₂'
+                        ],
+                        steps: ['Apply PV^γ = constant', 'P₂ = P₁(V₁/V₂)^γ']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // Heat engine efficiency
+                    const T_hot = randRange(500, 800, 0);
+                    const T_cold = randRange(250, 350, 0);
+                    const Q_in = randRange(5000, 10000, 0);
+                    
+                    // Carnot efficiency
+                    const efficiency = 1 - (T_cold / T_hot);
+                    
+                    // Work done = efficiency × Q_in
+                    const work = efficiency * Q_in;
+                    
+                    // Q_out = Q_in - W
+                    const Q_out = Q_in - work;
+                    
+                    return {
+                        text: `A heat engine operates between ${T_hot} K and ${T_cold} K with ${Q_in} J of heat input per cycle. If it operates at Carnot efficiency, calculate the heat rejected to the cold reservoir per cycle.`,
+                        answer: Q_out,
+                        unit: 'J',
+                        hints: [
+                            'Carnot efficiency: η = 1 - T_cold/T_hot',
+                            'Work done: W = η × Q_in',
+                            'Heat rejected: Q_out = Q_in - W'
+                        ],
+                        steps: ['Calculate Carnot efficiency', 'Find work done', 'Calculate Q_out = Q_in - W']
+                    };
+                }
+            },
+            
+            // ========================================
+            // MORE ELECTRICITY QUESTIONS
+            // ========================================
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Capacitors in series
+                    const C1 = randRange(10, 50, 0) * 1e-6;
+                    const C2 = randRange(10, 50, 0) * 1e-6;
+                    const voltage = randRange(12, 24, 0);
+                    
+                    // For series: 1/C_total = 1/C1 + 1/C2
+                    const C_total = (C1 * C2) / (C1 + C2);
+                    
+                    // Q = CV
+                    const charge = C_total * voltage;
+                    
+                    // Energy = ½QV
+                    const energy = 0.5 * charge * voltage;
+                    
+                    return {
+                        text: `Two capacitors of ${formatQuestionNumber(C1 * 1e6)} μF and ${formatQuestionNumber(C2 * 1e6)} μF are connected in series across ${voltage} V. Calculate the total energy stored.`,
+                        answer: energy,
+                        unit: 'J',
+                        hints: [
+                            'For series capacitors: 1/C_total = 1/C₁ + 1/C₂',
+                            'Charge stored: Q = C_total × V',
+                            'Energy = ½QV or ½CV²'
+                        ],
+                        steps: ['Calculate C_total for series', 'Find charge Q = CV', 'Calculate E = ½QV']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Transformer
+                    const N_primary = randRange(100, 500, 0);
+                    const N_secondary = randRange(1000, 3000, 0);
+                    const V_primary = randRange(12, 24, 0);
+                    const current_secondary = randRange(0.1, 0.5, 2);
+                    
+                    // V_s/V_p = N_s/N_p
+                    const V_secondary = V_primary * (N_secondary / N_primary);
+                    
+                    // Assuming 100% efficiency: P_in = P_out
+                    // V_p × I_p = V_s × I_s
+                    const current_primary = (V_secondary * current_secondary) / V_primary;
+                    
+                    return {
+                        text: `An ideal transformer has ${N_primary} turns on the primary coil and ${N_secondary} turns on the secondary. The primary voltage is ${V_primary} V and the secondary current is ${current_secondary} A. Calculate the primary current.`,
+                        answer: current_primary,
+                        unit: 'A',
+                        hints: [
+                            'Transformer equation: V_s/V_p = N_s/N_p',
+                            'For 100% efficiency: V_p I_p = V_s I_s',
+                            'Solve for I_p'
+                        ],
+                        steps: ['Calculate V_s using turns ratio', 'Apply power conservation', 'Solve for I_p']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 3,
+                points: 20,
+                generator: function() {
+                    // Potential divider
+                    const R1 = randRange(1000, 5000, 0);
+                    const R2 = randRange(2000, 8000, 0);
+                    const V_supply = randRange(9, 15, 0);
+                    const R_load = randRange(5000, 15000, 0);
+                    
+                    // R2 in parallel with R_load
+                    const R2_effective = (R2 * R_load) / (R2 + R_load);
+                    
+                    // V_out = V_supply × R2_eff/(R1 + R2_eff)
+                    const V_out = V_supply * R2_effective / (R1 + R2_effective);
+                    
+                    return {
+                        text: `A potential divider has resistors ${R1} Ω and ${R2} Ω connected to a ${V_supply} V supply. A load resistor of ${R_load} Ω is connected across the ${R2} Ω resistor. Calculate the voltage across the load.`,
+                        answer: V_out,
+                        unit: 'V',
+                        hints: [
+                            'R₂ and R_load are in parallel',
+                            'Calculate effective resistance: 1/R_eff = 1/R₂ + 1/R_load',
+                            'Use potential divider: V_out = V_in × R_eff/(R₁ + R_eff)'
+                        ],
+                        steps: ['Calculate R₂ in parallel with R_load', 'Apply potential divider formula']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 4,
+                points: 30,
+                generator: function() {
+                    // RC time constant and charge
+                    const resistance = randRange(10, 50, 0) * 1e3;
+                    const capacitance = randRange(100, 500, 0) * 1e-6;
+                    const voltage = randRange(9, 15, 0);
+                    const time = randRange(3, 10, 0) * 1e-3;
+                    
+                    // Time constant τ = RC
+                    const tau = resistance * capacitance;
+                    
+                    // Q(t) = Q_0(1 - e^(-t/τ)) for charging
+                    const Q_max = capacitance * voltage;
+                    const charge = Q_max * (1 - Math.exp(-time / tau));
+                    
+                    // Current I = (V/R)e^(-t/τ)
+                    const current = (voltage / resistance) * Math.exp(-time / tau);
+                    
+                    return {
+                        text: `A ${formatQuestionNumber(capacitance * 1e6)} μF capacitor charges through a ${formatQuestionNumber(resistance / 1e3)} kΩ resistor from a ${voltage} V supply. Calculate the charging current ${formatQuestionNumber(time * 1e3)} ms after the circuit is connected.`,
+                        answer: current,
+                        unit: 'A',
+                        hints: [
+                            'Time constant: τ = RC',
+                            'Charging current: I(t) = (V/R)e^(-t/τ)',
+                            'Calculate for the given time'
+                        ],
+                        steps: ['Calculate τ = RC', 'Calculate I_0 = V/R', 'Apply I(t) = I_0 e^(-t/τ)']
+                    };
+                }
+            },
+            
+            {
+                difficulty: 2,
+                points: 10,
+                generator: function() {
+                    // EMF and internal resistance
+                    const emf = randRange(6, 12, 0);
+                    const internalR = randRange(0.5, 2, 1);
+                    const externalR = randRange(5, 15, 0);
+                    
+                    // I = ε/(R+r)
+                    const current = emf / (externalR + internalR);
+                    
+                    // V_terminal = ε - Ir
+                    const terminalV = emf - (current * internalR);
+                    
+                    return {
+                        text: `A battery has EMF ${emf} V and internal resistance ${internalR} Ω. It is connected to an external resistor of ${externalR} Ω. Calculate the terminal voltage of the battery.`,
+                        answer: terminalV,
+                        unit: 'V',
+                        hints: [
+                            'Calculate current: I = ε/(R + r)',
+                            'Terminal voltage: V = ε - Ir'
+                        ],
+                        steps: ['Find current I = ε/(R+r)', 'Calculate V = ε - Ir']
+                    };
+                }
+            }
+        ];
+        
+        // ========================================
+        // UTILITY FUNCTIONS
+        // ========================================
+        
+        /**
+         * Generate a random number between min and max
+         * @param {number} min - Minimum value
+         * @param {number} max - Maximum value
+         * @param {number} decimals - Number of decimal places
+         */
+        function randRange(min, max, decimals) {
+            const value = Math.random() * (max - min) + min;
+            const rounded = decimals === 0 ? Math.round(value) : parseFloat(value.toFixed(decimals));
+            // Round to 3-4 significant figures for display
+            return toSigFig(rounded, 3);
+        }
+        
+        /**
+         * Round a number to n significant figures
+         * @param {number} num - Number to round
+         * @param {number} sig - Number of significant figures
+         */
+        function toSigFig(num, sig) {
+            if (num === 0) return 0;
+            const mult = Math.pow(10, sig - Math.floor(Math.log10(Math.abs(num))) - 1);
+            return Math.round(num * mult) / mult;
+        }
+        
+        /**
+         * Check if two numbers are equal to 2 significant figures
+         * Allows second significant figure to be ±1
+         * @param {number} answer - Student's answer
+         * @param {number} correct - Correct answer
+         */
+        function checkAnswer(answer, correct) {
+            if (isNaN(answer) || isNaN(correct)) return false;
+            
+            // Round both to 2 significant figures
+            const ans2sf = toSigFig(answer, 2);
+            const cor2sf = toSigFig(correct, 2);
+            
+            // Exact match
+            if (ans2sf === cor2sf) return true;
+            
+            // Check if second significant figure is within ±1
+            // Get order of magnitude
+            const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(correct))));
+            
+            // Get the first two significant digits
+            const ansDigits = Math.abs(Math.round(answer / magnitude * 100));
+            const corDigits = Math.abs(Math.round(correct / magnitude * 100));
+            
+            // Check if within ±1 on the second digit
+            const diff = Math.abs(ansDigits - corDigits);
+            return diff <= 1;
+        }
+        
+        /**
+         * Format time in MM:SS format
+         * @param {number} seconds - Time in seconds
+         */
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // ========================================
+        // QUESTION MANAGEMENT
+        // ========================================
+        
+        /**
+         * Generate a new random question
+         */
+        function generateQuestion() {
+            const template = questionTemplates[Math.floor(Math.random() * questionTemplates.length)];
+            const question = template.generator();
+            
+            return {
+                ...question,
+                difficulty: template.difficulty,
+                points: template.points
+            };
+        }
+        
+        /**
+         * Display the current question
+         */
+        function displayQuestion() {
+            console.log('Displaying new question');
+            gameState.questionNumber++;
+            gameState.attemptsRemaining = 3;
+            gameState.currentQuestion = generateQuestion();
+            
+            document.getElementById('question-number').textContent = `Question ${gameState.questionNumber}`;
+            document.getElementById('question-points').textContent = `Worth: ${gameState.currentQuestion.points} points`;
+            document.getElementById('question-text').innerHTML = formatText(gameState.currentQuestion.text);
+            document.getElementById('unit-label').textContent = gameState.currentQuestion.unit;
+            
+            // Clear and enable input
+            const answerInput = document.getElementById('answer-input');
+            answerInput.value = '';
+            answerInput.disabled = false;
+            
+            // Clear feedback area
+            document.getElementById('feedback-area').innerHTML = '';
+            
+            // Show and reset submit button to SUBMIT mode
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.style.display = 'inline-block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'SUBMIT';
+            submitBtn.onclick = submitAnswer;
+            
+            // Focus on input field
+            setTimeout(() => {
+                answerInput.focus();
+            }, 50);
+            
+            console.log('New question displayed. Input disabled:', answerInput.disabled, 'Button text:', submitBtn.textContent);
+        }
+        
+        // ========================================
+        // ANSWER SUBMISSION AND VALIDATION
+        // ========================================
+        
+        /**
+         * Handle answer submission
+         */
+        function submitAnswer() {
+            const input = document.getElementById('answer-input').value.trim();
+            const answer = parseFloat(input);
+            const feedbackArea = document.getElementById('feedback-area');
+            
+            // Validate input - don't change game state if invalid
+            if (input === '' || isNaN(answer)) {
+                feedbackArea.innerHTML = '<div class="feedback incorrect">⚠️ Please enter a valid number</div>';
+                document.getElementById('answer-input').focus();
+                return;  // Exit early - don't decrement attempts for invalid input
+            }
+            
+            if (checkAnswer(answer, gameState.currentQuestion.answer)) {
+                // Correct answer!
+                console.log('Correct answer!');
+                gameState.score += gameState.currentQuestion.points;
+                gameState.correctAnswers++;
+                gameState.questionsAnswered++;
+                
+                updateScore();
+                
+                // Show success message for 1 second
+                feedbackArea.innerHTML = `
+                    <div class="feedback correct">
+                        ✅ <strong>Correct!</strong> Well done!
+                        <br><br>
+                        <strong>+${gameState.currentQuestion.points} points</strong>
+                    </div>
+                `;
+                
+                document.getElementById('answer-input').disabled = true;
+                document.getElementById('submit-btn').disabled = true;
+                
+                // Auto-advance after 1 second
+                setTimeout(() => {
+                    if (gameState.gameActive) {
+                        displayQuestion();
+                    }
+                }, 1000);
+                
+            } else {
+                // Wrong answer - only now do we decrement attempts
+                gameState.attemptsRemaining--;
+                console.log('Wrong answer. Attempts remaining:', gameState.attemptsRemaining);
+                
+                // Defensive check - should never happen but just in case
+                if (gameState.attemptsRemaining < 0) {
+                    console.error('Attempts went negative! Resetting to 0');
+                    gameState.attemptsRemaining = 0;
+                }
+                
+                if (gameState.attemptsRemaining === 0) {
+                    // Out of attempts - show worked solution
+                    console.log('Out of attempts! Showing solution...');
+                    gameState.questionsAnswered++;
+                    
+                    // Build worked solution HTML
+                    let workedSolution = '';
+                    try {
+                        if (gameState.currentQuestion.steps && gameState.currentQuestion.steps.length > 0) {
+                            workedSolution = '<div style="margin-top: 15px; padding: 15px; background: #e8f4f8; border-radius: 10px;">';
+                            workedSolution += '<strong>📝 Worked Solution:</strong><br><br>';
+                            gameState.currentQuestion.steps.forEach((step, i) => {
+                                workedSolution += `<strong>${i + 1}.</strong> ${formatText(step)}<br>`;
+                            });
+                            workedSolution += '</div>';
+                        }
+                    } catch (e) {
+                        console.error('Error building worked solution:', e);
+                    }
+                    
+                    const correctAns = formatScientific(gameState.currentQuestion.answer);
+                    const unit = gameState.currentQuestion.unit || '';
+                    
+                    console.log('Setting feedback HTML...');
+                    feedbackArea.innerHTML = `
+                        <div class="feedback incorrect">
+                            ❌ <strong>Out of attempts!</strong><br>
+                            <br>
+                            The correct answer is <strong>${correctAns} ${unit}</strong>
+                            ${workedSolution}
+                        </div>
+                    `;
+                    console.log('Feedback set. HTML length:', feedbackArea.innerHTML.length);
+                    
+                    // Disable input and HIDE the submit button
+                    document.getElementById('answer-input').disabled = true;
+                    document.getElementById('submit-btn').style.display = 'none';
+                    
+                    // Create/show a NEXT QUESTION button in a separate location (below feedback)
+                    feedbackArea.innerHTML += `
+                        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ccc;">
+                            <p style="color: #666; margin-bottom: 15px; font-size: 0.95em;">
+                                📖 Review the solution above, then click to continue
+                            </p>
+                            <button class="btn" id="next-question-btn" style="padding: 15px 50px; font-size: 1.2em; animation: pulse 2s infinite;">
+                                NEXT QUESTION →
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Attach click handler to the new button
+                    document.getElementById('next-question-btn').onclick = nextQuestionHandler;
+                    console.log('Next question button created in separate location');
+                    
+                } else {
+                    // Still have attempts left
+                    const hintIndex = 3 - gameState.attemptsRemaining - 1;
+                    const hint = gameState.currentQuestion.hints[hintIndex] || '';
+                    
+                    feedbackArea.innerHTML = `
+                        <div class="feedback incorrect">
+                            ❌ <strong>Not quite right.</strong>
+                            <div class="attempts-remaining">
+                                Attempts remaining: ${gameState.attemptsRemaining}
+                            </div>
+                            ${hint ? `<div class="hint">💡 <strong>Hint:</strong> ${formatText(hint)}</div>` : ''}
+                        </div>
+                    `;
+                    
+                    document.getElementById('answer-input').value = '';
+                    document.getElementById('answer-input').focus();
+                }
+            }
+        }
+        
+        /**
+         * Handler for next question button
+         */
+        function nextQuestionHandler() {
+            console.log('Next question button clicked');
+            if (gameState.gameActive) {
+                displayQuestion();
+            }
+        }
+        
+        /**
+         * Format a number in scientific notation if very large or small
+         */
+        function formatScientific(num) {
+            if (Math.abs(num) < 0.01 || Math.abs(num) > 1000000) {
+                return num.toExponential(2);
+            }
+            return toSigFig(num, 3).toString();
+        }
+        
+        /**
+         * Format a number for display in questions
+         * Shows clean scientific notation for very large/small numbers
+         */
+        function formatQuestionNumber(num) {
+            // For very large or very small numbers, use scientific notation
+            if (Math.abs(num) >= 1e6 || (Math.abs(num) < 0.01 && num !== 0)) {
+                // Get the exponent
+                const exponent = Math.floor(Math.log10(Math.abs(num)));
+                const coefficient = num / Math.pow(10, exponent);
+                const cleanCoef = toSigFig(coefficient, 3);
+                return `${cleanCoef}×10^${exponent}`;
+            }
+            // For normal numbers, just use 3-4 sf
+            return toSigFig(num, 3).toString();
+        }
+        
+        /**
+         * Format text to show subscripts and superscripts properly
+         * Converts underscore notation (R_1) to subscript and ^ notation (x^2) to superscript
+         */
+        function formatText(text) {
+            // Replace subscripts: word_number or letter_number
+            text = text.replace(/([A-Za-z]+)_([0-9]+)/g, '$1<sub>$2</sub>');
+            text = text.replace(/([A-Za-z])_([A-Za-z]+)/g, '$1<sub>$2</sub>');
+            
+            // Replace superscripts: number^number or letter^number
+            text = text.replace(/([A-Za-z0-9]+)\^([0-9]+)/g, '$1<sup>$2</sup>');
+            text = text.replace(/([A-Za-z0-9]+)\^([A-Za-z]+)/g, '$1<sup>$2</sup>');
+            // Also handle negative exponents like ^-11
+            text = text.replace(/([A-Za-z0-9]+)\^(-[0-9]+)/g, '$1<sup>$2</sup>');
+            
+            return text;
+        }
+        
+        // ========================================
+        // GAME CONTROL FUNCTIONS
+        // ========================================
+        
+        /**
+         * Start the game
+         */
+        function startGame() {
+            // Reset game state
+            gameState = {
+                score: 0,
+                questionNumber: 0,
+                questionsAnswered: 0,
+                correctAnswers: 0,
+                timeRemaining: 900,
+                timerInterval: null,
+                currentQuestion: null,
+                attemptsRemaining: 3,
+                gameActive: true
+            };
+            
+            // Switch to game screen
+            document.getElementById('intro-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            // Start timer
+            startTimer();
+            
+            // Display first question
+            displayQuestion();
+        }
+        
+        /**
+         * Start the countdown timer
+         */
+        function startTimer() {
+            updateTimer();
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeRemaining--;
+                updateTimer();
+                
+                if (gameState.timeRemaining <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        /**
+         * Update timer display
+         */
+        function updateTimer() {
+            document.getElementById('timer').textContent = formatTime(gameState.timeRemaining);
+            
+            // Change color when time is running out
+            const timerEl = document.getElementById('timer');
+            if (gameState.timeRemaining <= 60) {
+                timerEl.style.background = 'linear-gradient(135deg, #ef476f 0%, #ff6b8a 100%)';
+                timerEl.style.color = 'white';
+            } else if (gameState.timeRemaining <= 300) {
+                timerEl.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff8c61 100%)';
+            }
+        }
+        
+        /**
+         * Update score display
+         */
+        function updateScore() {
+            document.getElementById('score').textContent = `🏆 Score: ${gameState.score}`;
+        }
+        
+        /**
+         * End the game and show results
+         */
+        function endGame() {
+            if (!gameState.gameActive) return;
+            
+            gameState.gameActive = false;
+            clearInterval(gameState.timerInterval);
+            
+            // Calculate statistics
+            const accuracy = gameState.questionsAnswered > 0 
+                ? Math.round((gameState.correctAnswers / gameState.questionsAnswered) * 100) 
+                : 0;
+            
+            // Determine performance message
+            let message = '';
+            if (gameState.score >= 200) {
+                message = '🌟 Outstanding Performance! You\'re a physics superstar!';
+            } else if (gameState.score >= 150) {
+                message = '🎯 Excellent Work! You really know your stuff!';
+            } else if (gameState.score >= 100) {
+                message = '👍 Great Job! Keep practicing those multi-step problems!';
+            } else if (gameState.score >= 50) {
+                message = '📚 Good Effort! Review the formulas and try again!';
+            } else {
+                message = '💪 Keep Learning! Practice makes perfect!';
+            }
+            
+            // Update end screen
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('performance-message').textContent = message;
+            document.getElementById('questions-answered').textContent = gameState.questionsAnswered;
+            document.getElementById('correct-answers').textContent = gameState.correctAnswers;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            
+            // Switch to end screen
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+        }
+        
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        
+        // Enter key handling
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && gameState.gameActive) {
+                const submitBtn = document.getElementById('submit-btn');
+                
+                // NEXT QUESTION button requires mouse click only (prevents accidental double-enter)
+                if (submitBtn.textContent === 'NEXT QUESTION') {
+                    return;
+                }
+                
+                submitBtn.click();
+            }
+        });
+        
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        
+        /**
+         * Create animated background particles
+         */
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#ff6b35', '#004e89', '#f7b801', '#06d6a0', '#667eea'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 60 + 20 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize on page load
+        window.onload = function() {
+            createParticles();
+        };
+    </script>
+</body>
+</html>
